@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "my_bucket" {
-  bucket = "testdoc-myterraform-code"
+  bucket = "testdoc-rc-code"
 
   website {
     index_document = "index.html"
