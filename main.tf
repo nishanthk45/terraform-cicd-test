@@ -21,18 +21,22 @@ resource "aws_s3_bucket" "my_bucket" {
   }
 }
 
+# index
 resource "aws_s3_bucket_object" "index_file" {
   bucket = aws_s3_bucket.my_bucket.id
   key    = "index.html"
   source = "docs/build/html/index.html"
   content_type = "text/html"
+  acl    = "public-read"
 }
 
+# error
 resource "aws_s3_bucket_object" "error_file" {
   bucket = aws_s3_bucket.my_bucket.id
   key    = "error.html"
   source = "docs/build/html/error.html"
   content_type = "text/html"
+  acl    = "public-read"
 }
 
 resource "aws_s3_bucket_policy" "my_bucket_policy" {
