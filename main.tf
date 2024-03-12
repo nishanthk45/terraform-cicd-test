@@ -2,6 +2,14 @@ provider "aws" {
   region = "us-east-1"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "global-terrafrm-rs-statefile"
+    key    = "/"
+    region = "us-east-1"
+  }
+}
+
 resource "aws_s3_bucket" "my_bucket" {
   bucket = "testdoc-rc-code"
 
