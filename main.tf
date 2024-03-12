@@ -2,6 +2,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
+# backend
 terraform {
   backend "s3" {
     bucket = "global-terrafrm-rs-statefile"
