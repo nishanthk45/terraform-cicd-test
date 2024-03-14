@@ -30,20 +30,12 @@ resource "aws_s3_bucket_public_access_block" "public_access_block" {
   restrict_public_buckets = false
 }
 
-# index
-resource "aws_s3_bucket_object" "index_file" {
-  bucket = aws_s3_bucket.my_bucket.id
-  key    = "index.html"
-  source = "docs/build/html/index.html"
-  content_type = "text/html"
-}
-
-# error
-resource "aws_s3_bucket_object" "error_file" {
-  bucket = aws_s3_bucket.my_bucket.id
-  key    = "error.html"
-  source = "docs/build/html/error.html"
-  content_type = "text/html"
+resource "aws_s3_bucket_object" "dist" {
+  for_each = fileset("/docs/build/html/", "*")
+  bucket = "aws_s3_bucket.my_bucket.id"
+  key    = each.value
+  source = "/docs/build/html/${each.value}"
+  etag   = filemd5("/docs/build/html/${each.value}")
 }
 
 resource "aws_s3_bucket_policy" "my_bucket_policy" {
