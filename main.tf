@@ -1,3 +1,4 @@
+# provider
 provider "aws" {
   region = "us-east-1"
 }
@@ -21,6 +22,7 @@ resource "aws_s3_bucket" "my_bucket" {
   }
 }
 
+# s3 public access
 resource "aws_s3_bucket_public_access_block" "public_access_block" {
   bucket = aws_s3_bucket.my_bucket.id
 
@@ -30,7 +32,8 @@ resource "aws_s3_bucket_public_access_block" "public_access_block" {
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket_object" "dist" {
+# s3 bucket objects
+resource "aws_s3_bucket_object" "build" {
   for_each = fileset("/docs/build/html/", "*")
   bucket = "aws_s3_bucket.my_bucket.id"
   key    = each.value
@@ -38,6 +41,7 @@ resource "aws_s3_bucket_object" "dist" {
   etag   = filemd5("/docs/build/html/${each.value}")
 }
 
+# s3 bucket policy
 resource "aws_s3_bucket_policy" "my_bucket_policy" {
   bucket = aws_s3_bucket.my_bucket.bucket
 
