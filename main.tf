@@ -1,15 +1,6 @@
 # provider
 provider "aws" {
-  region = "us-east-1"
-}
-
-# backend
-terraform {
-  backend "s3" {
-    bucket = "global-terrafrm-rs-statefile"
-    key    = "terraform.tfstate"
-    region = "us-east-1"
-  }
+  region     = "us-east-1"
 }
 
 # s3
@@ -19,6 +10,15 @@ resource "aws_s3_bucket" "my_bucket" {
   website {
     index_document = "index.html"
     error_document = "error.html"
+  }
+}
+
+# backend
+terraform {
+  backend "s3" {
+    bucket = "global-terrafrm-rs-statefile"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
   }
 }
 
@@ -34,11 +34,13 @@ resource "aws_s3_bucket_public_access_block" "public_access_block" {
 
 # s3 bucket objects
 resource "aws_s3_bucket_object" "build" {
-  for_each = fileset("/docs/build/html", "**/*")
+  for_each = fileset("docs/build/html", "**/*")
   bucket = aws_s3_bucket.my_bucket.id
   key    = each.value
-  source = "/docs/build/html/${each.value}"
-  # etag   = filemd5("/docs/build/html/${each.value}")
+  source = "docs/build/html/${each.value}"
+  etag          = filemd5("docs/build/html/${each.value}")
+  content_type  = lookup(var.mime_types, split(".", each.value)[length(split(".", each.value)) - 1])
+  # content_type = "text/html,text/css,image/png,application/javascript"
 }
 
 # s3 bucket policy
