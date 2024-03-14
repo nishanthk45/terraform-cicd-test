@@ -35,8 +35,8 @@ resource "aws_s3_bucket_public_access_block" "public_access_block" {
 # s3 bucket objects
 resource "aws_s3_bucket_object" "build" {
   for_each = fileset("/docs/build/html/", "*")
-  bucket = "aws_s3_bucket.my_bucket.id"
-  key    = each.value
+  bucket = aws_s3_bucket.my_bucket.id
+  key    = each.key
   source = "/docs/build/html/${each.value}"
   etag   = filemd5("/docs/build/html/${each.value}")
 }
